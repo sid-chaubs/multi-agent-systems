@@ -40,4 +40,4 @@ class Node(object):
       :return: Whether the node is a terminal node
       :rtype: bool
       """
-    return self.left is None and self.right is None
+    return (self.left is None and self.right is None) or self.visits == 0

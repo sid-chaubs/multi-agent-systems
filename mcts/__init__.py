@@ -6,7 +6,7 @@ import random
 
 class MCTS:
 
-  def __init__(self, tree_height: int = 3, exploration_weight: int = 50):
+  def __init__(self, tree_height: int, exploration_weight: int):
     self.tree = Tree(height = tree_height)
     self.plays = 0
     self.exploration_weight = exploration_weight
@@ -18,18 +18,26 @@ class MCTS:
       self.plays += 1
 
       while not selected.is_terminal():
-        selected = self.choose(selected)
+        selected = self.select(selected)
+      
+      final = self.rollout(selected)
 
-      self.back_propagate(selected)
+      self.backup(selected, final)
+  
+  def rollout(self, node: Node):
+    while node.left and node.right:
+      node = self.select(node)
+    
+    return node
 
-  def choose(self, node: Node) -> Node:
+  def select(self, node: Node) -> Node:
     children = [node.left, node.right]
     random.shuffle(children)
 
     return max(children, key = self.score)
 
-  def back_propagate(self, node: Node):
-    reward = node.reward
+  def backup(self, node: Node, final: Node):
+    reward = final.reward
     node.visits += 1
 
     while node.parent is not None:
