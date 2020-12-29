@@ -1,0 +1,2 @@
+VAL = 'val'
+VALUE = 'value'
